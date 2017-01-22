@@ -1,0 +1,10 @@
+<html>
+{{ range .}}
+  <ul>
+    <li style=list-style-type:none>
+      <a href="/list/{{.Name}}">{{ .Name }}</a>
+      {{ .Since }}
+    </li>
+  </ul>
+{{ end }}
+</html>
