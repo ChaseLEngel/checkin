@@ -40,6 +40,12 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, node)
 }
 
+func scheduleHandler(w http.ResponseWriter, r *http.Request) {
+	name := r.URL.Path[len("/schedule/"):]
+	r.ParseForm()
+	ds.SetSchedule(name, r.Form["digit"][0]+r.Form["schedule"][0])
+}
+
 // Show all nodes and newest timestamp.
 func handler(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("index.html")
@@ -51,5 +57,6 @@ func main() {
 	http.HandleFunc("/checkin/", checkinHandler)
 	http.HandleFunc("/list/", listHandler)
 	http.HandleFunc("/delete/", deleteHandler)
+	http.HandleFunc("/schedule/", scheduleHandler)
 	http.ListenAndServe(":8080", nil)
 }

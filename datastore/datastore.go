@@ -2,30 +2,15 @@ package datastore
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/chaselengel/checkin/node"
 	"io/ioutil"
 	"os"
-	"regexp"
 	"time"
 )
 
-type Node struct {
-	Name       string
-	Timestamps []time.Time
-}
-
 type DataStore struct {
-	Nodes []*Node
-}
-
-// Returns duration since last checkin showing only largest time increment
-func (n *Node) Since() string {
-	last := n.Timestamps[len(n.Timestamps)-1]
-	s := time.Since(last).String()
-	r, err := regexp.Compile("[0-9]*(\\.[0-9]*)?[a-z]")
-	if err != nil {
-		return "-1"
-	}
-	return r.FindString(s)
+	Nodes []*node.Node
 }
 
 // Check if datastore file exists.
@@ -38,11 +23,11 @@ func exists() bool {
 }
 
 func (ds *DataStore) InsertOrUpdate(name string) {
-	_, node := ds.Find(name)
-	if node != nil {
-		node.Timestamps = append(node.Timestamps, time.Now())
+	_, n := ds.Find(name)
+	if n != nil {
+		n.Timestamps = append(n.Timestamps, time.Now())
 	} else { // Add new node
-		new_node := new(Node)
+		new_node := new(node.Node)
 		new_node.Name = name
 		new_node.Timestamps = append(new_node.Timestamps, time.Now())
 		ds.Nodes = append(ds.Nodes, new_node)
@@ -78,7 +63,7 @@ func (ds *DataStore) save() error {
 }
 
 // Find a node by name from the datastore.
-func (ds *DataStore) Find(name string) (int, *Node) {
+func (ds *DataStore) Find(name string) (int, *node.Node) {
 	for index, node := range ds.Nodes {
 		if node.Name == name {
 			return index, node
@@ -93,5 +78,15 @@ func (ds *DataStore) Delete(name string) {
 		return
 	}
 	ds.Nodes = append(ds.Nodes[:index], ds.Nodes[index+1:]...)
+	ds.save()
+}
+
+func (ds *DataStore) SetSchedule(name string, schedule string) {
+	dur, err := time.ParseDuration(schedule)
+	if err != nil {
+	}
+	_, node := ds.Find(name)
+	fmt.Println(dur)
+	node.Schedule = &dur
 	ds.save()
 }

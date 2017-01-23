@@ -5,6 +5,17 @@
   <form style=display:inline-block action="/delete/{{ .Name }}">
     <input type="submit" value="Delete">
   </form>
+  <form action="/schedule/{{ .Name }}" method=POST>
+	  <input type="number" name="digit" min="1" placeholder={{.Schedule}}>
+    <select name="schedule">
+      <option value="s">seconds</option>
+      <option value="m">minutes</option>
+      <option value="h">hours</option>
+      <option value="d">days</option>
+      <option value="mon">months</option>
+    </select>
+    <input type="submit" value="Schedule">
+  </form>
 </div>
 
 <ul style=list-style-type:none>
