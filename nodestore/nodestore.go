@@ -12,11 +12,27 @@ type Node struct {
 	Id         int
 	Name       string
 	Timestamps []time.Time
-	Schedule   *time.Duration
+	Schedule   *Schedule
+	Misses     []int
+}
+
+type Schedule struct {
+	minutes int
+	hours   int
+	days    int
+	weeks   int
+	months  int
 }
 
 type NodeStore struct {
 	Nodes []*Node
+}
+
+func (s *Schedule) Check(time time.Duration) bool {
+	if s == nil {
+		return true
+	}
+	return true
 }
 
 // Open and parse existing nodestore or return empty if file doesn't exist.

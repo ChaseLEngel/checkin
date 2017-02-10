@@ -1,27 +1,27 @@
 package main
 
 import (
-	"fmt"
 	"github.com/chaselengel/checkin/mailer"
 	"github.com/chaselengel/checkin/nodestore"
+	"github.com/gorilla/handlers"
 	"net/http"
 )
 
 var ns *nodestore.NodeStore
 var mail *mailer.Mailer
 
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 	var err error
 	ns, err = nodestore.Open()
-	if err != nil {
-		fmt.Println("Failed to open node store: " + err.Error())
-		return
-	}
+	check(err)
 	mail, err = mailer.Open()
-	if err != nil {
-		fmt.Println("Failed to open mail store: " + err.Error())
-		return
-	}
+	check(err)
 	router := NewRouter()
-	http.ListenAndServe(":8080", router)
+	http.ListenAndServe(":8080", handlers.CORS()(router))
 }

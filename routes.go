@@ -17,7 +17,7 @@ var routes = Routes{
 	Route{
 		"ScriptIndex",
 		"GET",
-		"/",
+		"/scripts",
 		ScriptIndex,
 	},
 	Route{
